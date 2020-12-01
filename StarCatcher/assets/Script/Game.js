@@ -42,7 +42,7 @@ cc.Class({
 
     getNewStarPosition () {
         //根据地面高度以及弹跳高度获取一个随机y坐标
-        let randY = this.ground.y + Math.random() * this.player.getComponent('Player').jumpHeight + 50;
+        let randY = this.groundY + Math.random() * this.player.getComponent('Player').jumpHeight + 50;
         //根据屏幕的宽度获取一个x坐标
         let maxWidth = this.node.width/2;
         let randX = (Math.random() - 0.5) * 2 * maxWidth;
