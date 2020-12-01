@@ -29,6 +29,14 @@ cc.Class({
         player: {
             default: null,
             type: cc.Node
+        },
+        scoreDisplay: {
+            default: null,
+            type: cc.Label
+        },
+        scoreAudio: {
+            default: null,
+            type: cc.AudioClip
         }
     },
 
@@ -47,6 +55,11 @@ cc.Class({
         this.node.addChild(newStar);
         //随机坐标
         newStar.setPosition(this.getNewStarPosition());
+        newStar.getComponent('Star').game = this;
+
+        //重置计时器，更具当前小时时间范围随机一个时间
+        this.starDuration = this.minStarDuration + Math.random() * (this.maxStarDuration - this.minStarDuration);
+        this.timer = 0;
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -58,16 +71,38 @@ cc.Class({
         // let d2 = this.node.getChildByName('player').getComponent('Player').jumpHeight;
         // console.log('d2 : ', d2);
 
+        //初始化计时器
+        this.timer = 0;
+        this.starDuration = 0;
+
         //获取地面y坐标
         let groundY = this.ground.y + this.ground.height/2;
         //生成新的星星
         this.spawnNewStar();
-        
+        this.score = 0;
     },
 
     start () {
 
     },
 
-    // update (dt) {},
+    update (dt) {
+        //超过时间就失败
+        if(this.timer > this.starDuration) {
+            this.gameOver();
+            return;
+        }
+        this.timer += dt;
+    },
+
+    gainScore () {
+        this.score += 1;
+        this.scoreDisplay.string = 'Score:' + this.score;
+        cc.audioEngine.playEffect(this.scoreAudio, false);
+    },
+
+    gameOver () {
+        this.player.stopAllActions();
+        cc.director.loadScene('game');
+    }
 });

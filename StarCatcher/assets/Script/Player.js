@@ -20,17 +20,24 @@ cc.Class({
         maxMoveSpeed: 0,
         //加速度
         accel: 0,
-        star: {
+        jumpAudio: {
             default: null,
-            type: cc.SpriteFrame
+            type: cc.AudioClip
         }
 
+    },
+
+    playJumpSound () {
+        //调用引擎播放声音
+       cc.audioEngine.playEffect(this.jumpAudio); 
     },
 
     setJumpAction () {
         let jumpUp = cc.moveBy(this.jumpDuration, cc.v2(0, this.jumpHeight)).easing(cc.easeCubicActionOut());
         let jumpDown = cc.moveBy(this.jumpDuration, cc.v2(0, -this.jumpHeight)).easing(cc.easeCubicActionIn());
-        return cc.repeatForever(cc.sequence(jumpUp, jumpDown));
+        //添加一个回调函数
+        let callBack = cc.callFunc(this.playJumpSound, this);
+        return cc.repeatForever(cc.sequence(jumpUp, jumpDown, callBack));
     },
 
     onKeyDown (event) {
@@ -100,6 +107,6 @@ cc.Class({
     onDestroy () {
         //取消键盘监听
         cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
-        cc.syctemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+        cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
     }
 });
