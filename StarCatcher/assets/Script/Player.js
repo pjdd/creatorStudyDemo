@@ -59,11 +59,15 @@ cc.Class({
                 this.accLeft = false;
                 break;
             case cc.macro.KEY.d:
-                this.accRight = true;
+                this.accRight = false;
                 break;
             default:
                 break;
         }
+    },
+
+    playJumpAction () {
+        this.node.runAction(this.setJumpAction());
     },
 
     
@@ -73,8 +77,8 @@ cc.Class({
         // this.leftDirec = false;
         // this.rightDirec = false;
         //跳跃动作
-        this.jumpAction = this.setJumpAction();
-        this.node.runAction(this.jumpAction);
+        // this.jumpAction = this.setJumpAction();
+        // this.node.runAction(this.jumpAction);
         //加速度开关
         this.accLeft = false;
         this.accRight = false;
@@ -89,7 +93,7 @@ cc.Class({
 
     },
 
-    update (dt) {
+    updatePerFrame (dt) {
         //根据加速度更新速度
         if (this.accLeft) {
             this.xSpeed -= this.accel * dt;

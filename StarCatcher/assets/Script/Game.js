@@ -74,12 +74,14 @@ cc.Class({
         //初始化计时器
         this.timer = 0;
         this.starDuration = 0;
+        //游戏是否开始的标示
+        // this.bStartGame = false;
 
         //获取地面y坐标
         let groundY = this.ground.y + this.ground.height/2;
-        //生成新的星星
-        this.spawnNewStar();
         this.score = 0;
+        //游戏是否开始的标志
+        this.gameStart = false;
     },
 
     start () {
@@ -87,12 +89,18 @@ cc.Class({
     },
 
     update (dt) {
+        if(!this.bStartGame) {
+            // console.log('游戏还没开始。。。');
+            return;
+        }
         //超过时间就失败
         if(this.timer > this.starDuration) {
             this.gameOver();
             return;
         }
         this.timer += dt;
+        //player 刷新
+        this.playerComponent.updatePerFrame(dt);
     },
 
     gainScore () {
@@ -104,5 +112,18 @@ cc.Class({
     gameOver () {
         this.player.stopAllActions();
         cc.director.loadScene('game');
+    },
+
+    startGame (event) {
+        // console.log('0000000000');
+        this.bStartGame = true;
+        this.node.getChildByName('btnStartGame').active = false;
+        //生成新的星星
+        this.spawnNewStar();
+        //player跳跃动作
+        this.playerComponent = this.player.getComponent('Player');
+        if(this.playerComponent) {
+            this.playerComponent.playJumpAction();
+        }
     }
 });
