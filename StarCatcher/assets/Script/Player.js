@@ -33,11 +33,13 @@ cc.Class({
     },
 
     setJumpAction () {
+        let scale1 = cc.scaleTo(0.1, 1, 0.5);
+        let scale2 = cc.scaleTo(0.1, 1, 1);
         let jumpUp = cc.moveBy(this.jumpDuration, cc.v2(0, this.jumpHeight)).easing(cc.easeCubicActionOut());
         let jumpDown = cc.moveBy(this.jumpDuration, cc.v2(0, -this.jumpHeight)).easing(cc.easeCubicActionIn());
         //添加一个回调函数
         let callBack = cc.callFunc(this.playJumpSound, this);
-        return cc.repeatForever(cc.sequence(jumpUp, jumpDown, callBack));
+        return cc.repeatForever(cc.sequence(scale1, scale2, jumpUp, jumpDown, callBack));
     },
 
     onKeyDown (event) {
