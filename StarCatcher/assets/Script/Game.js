@@ -7,7 +7,7 @@
 // Learn life-cycle callbacks:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] https://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
-
+let Global = require('Global');
 cc.Class({
     extends: cc.Component,
 
@@ -37,6 +37,10 @@ cc.Class({
         scoreAudio: {
             default: null,
             type: cc.AudioClip
+        },
+        failInfo: {
+            default: null,
+            type: cc.Node
         }
     },
 
@@ -78,10 +82,13 @@ cc.Class({
         // this.bStartGame = false;
 
         //获取地面y坐标
-        let groundY = this.ground.y + this.ground.height/2;
+        this.groundY = this.ground.y + this.ground.height/2;
         this.score = 0;
         //游戏是否开始的标志
         this.gameStart = false;
+        if(Global.isRestartGame) {
+            this.startGame();
+        }
     },
 
     start () {
@@ -95,7 +102,9 @@ cc.Class({
         }
         //超过时间就失败
         if(this.timer > this.starDuration) {
+            console.log('gameover了========');
             this.gameOver();
+            this.bStartGame = false;
             return;
         }
         this.timer += dt;
@@ -111,7 +120,18 @@ cc.Class({
 
     gameOver () {
         this.player.stopAllActions();
-        cc.director.loadScene('game');
+        this.player.setPosition(cc.v2(0, this.groundY));
+        this.popFailInfo();
+        // cc.director.loadScene('game');
+    },
+
+    popFailInfo () {
+        console.log('popFailInfo-------');
+        this.failInfo.active = true;
+        this.failInfo.setScale(0.1);
+        let scaleAction1 = cc.scaleTo(0.2, 1.2);
+        let scaleAction2 = cc.scaleTo(0.1, 1);
+        this.failInfo.runAction(cc.sequence(scaleAction1, scaleAction2));
     },
 
     startGame (event) {
@@ -125,5 +145,10 @@ cc.Class({
         if(this.playerComponent) {
             this.playerComponent.playJumpAction();
         }
+    },
+
+    restartGame () {
+        Global.isRestartGame = true;
+        cc.director.loadScene('game');
     }
 });
