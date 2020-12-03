@@ -104,8 +104,12 @@ cc.Class({
         if ( Math.abs(this.xSpeed) > this.maxMoveSpeed) {
             this.xSpeed = this.maxMoveSpeed * this.xSpeed / Math.abs(this.xSpeed);
         }
-        //更新节点坐标
-        this.node.x = this.node.x + this.xSpeed * dt;
+        //更新节点坐标，不能超过屏幕宽度
+        let posx = this.node.x + this.xSpeed * dt;
+        if (Math.abs(posx) > (this.node.getParent().width/2 - this.node.width/2)) {
+            posx = (this.node.getParent().width/2 - this.node.width/2) * this.xSpeed / Math.abs(this.xSpeed);
+        }
+        this.node.x = posx;
     },
 
     onDestroy () {
