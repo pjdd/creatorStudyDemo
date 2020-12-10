@@ -36,7 +36,7 @@ cc.Class({
     // onLoad () {},
 
     start () {
-
+        
     },
 
     update (dt) {
@@ -53,5 +53,15 @@ cc.Class({
         let opcityRatio = 1 - this.game.timer/this.game.starDuration;
         let minOpacity = 50;
         this.node.opacity = minOpacity + Math.floor(opcityRatio * (255 - minOpacity));
+
+        //更新星星头顶进度条
+        let progress = this.node.getChildByName('progressBar');
+        if (progress) {
+            let bar = progress.getComponent(cc.ProgressBar);
+            if (bar) {
+                // console.log('progress  ', bar.progress);
+                bar.progress = opcityRatio;
+            }
+        }
     },
 });
