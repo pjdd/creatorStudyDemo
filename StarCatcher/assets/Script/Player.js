@@ -109,7 +109,9 @@ cc.Class({
         //更新节点坐标，不能超过屏幕宽度
         let posx = this.node.x + this.xSpeed * dt;
         if (Math.abs(posx) > (this.node.getParent().width/2 - this.node.width/2)) {
-            posx = (this.node.getParent().width/2 - this.node.width/2) * this.xSpeed / Math.abs(this.xSpeed);
+            posx = (this.node.getParent().width/2 - this.node.width/2) * posx / Math.abs(posx);
+            //到达边界时，速度将为0
+            this.xSpeed = 0
         }
         this.node.x = posx;
     },
